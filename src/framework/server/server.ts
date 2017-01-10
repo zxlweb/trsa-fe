@@ -64,11 +64,11 @@ if(config.getIn(['IMAGE_UPLOAD', 'ENABLE'])) {
     app.use(config.getIn(['IMAGE_UPLOAD', 'PATH']), ImageUploadMiddleware);
 }
 
-app.use('/wechat-auth', WechatRouter);
-app.use('/wechat-jsapi', WechatJSAPI);
-
-// app.all(`${config.getIn(['IMAGE_UPLOAD', 'ADD_PATH'])}/:directory`, addImage);
-// app.all(config.getIn(['IMAGE_UPLOAD', 'DELETE_PATH']), deleteImage);
+// Wechat
+if(config.getIn(['@WECHAT', 'ENABLE'])) {
+    app.use('/wechat-auth', WechatRouter);
+    app.use('/wechat-jsapi', WechatJSAPI);
+}
 
 // 页面
 app.use('/', Page);

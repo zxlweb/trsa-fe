@@ -188,7 +188,8 @@ gulp.task('watch img', ['move img'], function() {
 });
 
 // gulp.task('default', ['clean', 'image compression', 'update img to oss', 'compile ts', 'webpack', 'compile less', 'move lib']);
-gulp.task('default', ['clean', 'move img', 'compile ts', 'webpack', 'compile less', 'move lib']);
+// gulp.task('default', ['clean', 'move img', 'compile ts', 'webpack', 'compile less', 'move lib']);
+gulp.task('default', ['clean', 'compile ts', 'webpack', 'compile less', 'move lib']);
 gulp.task('dev', ['watch webpack', 'watch ts', 'watch lib', 'watch img', 'watch less']);
 gulp.task('test', ['babel', 'compile less', 'compile tests'], function() {
     return gulp.src(path.join(BUILD_DIR, TEST_DIR, 'spec.js'), {read: false})

@@ -7,7 +7,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import BaseComponent, {Interceptor} from '../../../base';
 import {Row, Col, Button, Input, Table, Popconfirm, Form, DatePicker} from 'antd';
-import {WrappedFormUtils} from 'antd/lib/form/form';
+import {WrappedFormUtils} from 'antd/lib/form/Form';
 const FormItem = Form.Item;
 import {default as BreadCrumbAUI, BreadcrumbContent} from '../breadcrumb';
 import {browserHistory} from 'react-router';

@@ -1,0 +1,21 @@
+{
+  apps: [
+    {
+      name: "template",
+      script: "dist/framework/server/server.js",
+      env: {
+        NODE_ENV: "production"
+      }
+    },
+  ],
+  deploy : {
+    production : {
+      user : "root",
+      host : "xiaonian.me",
+      ref  : "origin/master",
+      repo : "https://github.com/MaxLee1994/XNL-React-Boilerplate.git",
+      path : "/usr/local/nginx/html/XNL-React-Boilerplate",
+      "post-deploy" : "npm i && typings i && gulp && pm2 startOrRestart ecosystem.json5"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "redux-promise": "registry:dt/redux-promise#0.5.3+20160921154131",
+    "redux-thunk": "registry:npm/redux-thunk#2.0.0+20160525185520"
+  },
+  "globalDependencies": {}
+}

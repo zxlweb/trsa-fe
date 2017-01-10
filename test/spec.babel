@@ -1,0 +1,10 @@
+/**
+ * @fileOverview 所有测试用例
+ * @author Max
+ **/
+
+import frameworkBootstrapWrap from './case/framework.bootstrap.wrap';
+
+describe('framework.bootstrap.wrap', () => {
+    frameworkBootstrapWrap();
+});

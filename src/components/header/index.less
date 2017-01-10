@@ -1,0 +1,22 @@
+header {
+    position: fixed;
+    #U > .pos(0, 0, auto, 0);
+    z-index: @tab-bar-z-index;
+
+    @height: @header-height;
+    height: @height + 1;
+
+    border-bottom: 1px solid #eee;
+    background-color: white;
+
+    .title {
+        height: @height;
+        padding-left: @page-horizontal-padding;
+
+        h1 {
+            margin: (@height - 36) / 2 auto;
+            
+            color: @primary-color;
+        }
+    }
+}

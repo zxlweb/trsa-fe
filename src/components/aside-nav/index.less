@@ -1,0 +1,48 @@
+#aside-nav {
+    position: fixed;
+    #U > .pos(@header-height, auto, 0, 0);
+    z-index: @tab-bar-z-index - 1;
+
+    #U > .list-unstyled();
+    margin: 0;
+    padding: 0;
+    width: 5 / 24 * 100%;
+    min-height: 100%;
+
+    background-color: #f9f9f9;
+
+    li {
+        position: relative;
+
+        @height: 54px;
+        height: @height;
+        padding-left: @page-horizontal-padding;
+
+        line-height: @height;
+
+        cursor: pointer;
+
+        @color: #71b5de;
+        &:hover {
+            color: @color;
+        }
+
+        &.active {
+            color: @color;
+
+            background-color: white;
+
+            &:before {
+                content: '';
+                position: absolute;
+                #U > .pos(0, auto, 0, 0);
+                z-index: 10;
+
+                width: 4px;
+                height: @height;
+
+                background-color: @color;
+            }
+        }
+    }
+}

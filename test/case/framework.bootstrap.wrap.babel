@@ -1,0 +1,160 @@
+/**
+ * @fileOverview framework.bootstrap.wrap 测试用例
+ * @author Max
+ **/
+
+import expect from 'expect.js';
+import HTMLWrap from '../../framework/bootstrap/wrap';
+
+export default function tests() {
+    it('convert obj to array', () => {
+        let a = new HTMLWrap();
+        expect(a._head).to.be.an('array');
+        expect(a._bottom).to.be.an('array');
+    });
+
+    it('remove head tag', () => {
+        let a = new HTMLWrap();
+        expect(a.getHead()).to.contain('charset');
+        a.removeTag('charset');
+        expect(a.getHead()).not.to.contain('charset');
+    });
+
+    it('remove bottom tag' , () => {
+        let a = new HTMLWrap();
+        expect(a.getBottom()).to.contain('</body>');
+        a.removeTag('bodyTagClose');
+        expect(a.getBottom()).not.to.contain('</body>');
+    });
+
+    it('remove tag not exist', () => {
+        let a = new HTMLWrap();
+        let oriOutput = a.getHead() + a.getBottom();
+        a.removeTag('not a tag');
+        let newOutput = a.getHead() + a.getBottom();
+        expect(oriOutput).to.be(newOutput);
+    });
+
+    it('set head tag', () => {
+        let a = new HTMLWrap();
+        expect(a.getHead()).to.contain('<meta charset="utf-8" >');
+        a.setTag('charset', '<meta charset="abc" >');
+        expect(a.getHead()).to.contain('<meta charset="abc" >');
+    });
+
+    it('set bottom tag', () => {
+        let a = new HTMLWrap();
+        expect(a.getBottom()).to.contain('</body>');
+        a.setTag('bodyTagClose', '</badbody>');
+        expect(a.getBottom()).to.contain('</badbody>');
+    });
+
+    it('set tag not exist', () => {
+        let a = new HTMLWrap();
+        let oriOutput = a.getHead() + a.getBottom();
+        a.setTag('not a tag', 'abc');
+        let newOutput = a.getHead() + a.getBottom();
+        expect(oriOutput).to.be(newOutput);
+    });
+
+    it('get head tag', () => {
+        let a = new HTMLWrap();
+        expect(a.getTag('charset')).to.be('<meta charset="utf-8" >');
+    });
+
+    it('get bottom tag', () => {
+        let a = new HTMLWrap();
+        expect(a.getTag('bodyTagClose')).to.be('</body>');
+    });
+
+    it('get tag not exist', () => {
+        let a = new HTMLWrap();
+        expect(a.getTag('not a tag')).to.be(undefined);
+    });
+
+    it('append script tag', () => {
+        let a = new HTMLWrap();
+        a.appendTagAfter('entry', 'newTag', {src:'123'}, a.TAG_TYPE.SCRIPT);
+        expect(a.getBottom()).to.contain('<script type="text/javascript" src="123"></script>');
+    });
+
+    it('append link tag', () => {
+        let a = new HTMLWrap();
+        a.appendTagAfter('formatDetection', 'newTag', {href:'345'}, a.TAG_TYPE.STYLE);
+        expect(a.getHead()).to.contain('<link rel="stylesheet" href="345" >');
+    });
+
+    it('append meta tag', () => {
+        let a = new HTMLWrap();
+        a.appendTagAfter('formatDetection', 'newTag', {a:'345', b:'hahah', c:'kuku'}, a.TAG_TYPE.META);
+        expect(a.getHead()).to.contain('<meta a="345" b="hahah" c="kuku" >');
+    });
+
+    it('append duplicated tag key', () => {
+        let a = new HTMLWrap();
+        let fn = () => {
+            a.appendTagAfter('entry', 'entry', {src:'123'}, a.TAG_TYPE.SCRIPT);
+        };
+        expect(fn).to.throwException(/不能插入重复的标签key/);
+    });
+
+    it('append undefined tag key', () => {
+        let a = new HTMLWrap();
+        let fn = () => {
+            a.appendTagAfter('nobody', 'hh', {src:'123'}, a.TAG_TYPE.SCRIPT);
+        };
+        expect(fn).to.throwException(/未找到已有的key/);
+    });
+
+    it('append undefined tag type', () => {
+        let a = new HTMLWrap();
+        let fn = () => {
+            a.appendTagAfter('formatDetection', 'hh', {src:'123'}, 'nobody');
+        };
+        expect(fn).to.throwException(/未定义的TAG_TYPE/);
+    });
+
+    it('inject global var', () => {
+        let a = new HTMLWrap();
+        a.injectGlobalVar({
+            __PUBLIC__: 123,
+            __BASE__: '333',
+            __HAHA__: false
+        });
+
+        expect(a.getHead()).to.contain('var __PUBLIC__ = 123;');
+        expect(a.getHead()).to.contain('var __BASE__ = \'333\';');
+        expect(a.getHead()).to.contain('var __HAHA__ = false;');
+    });
+
+    it('prepend script tag', () => {
+        let a = new HTMLWrap();
+        a.prependTagBefore('entry', 'newTag', {src:'123'}, a.TAG_TYPE.SCRIPT);
+        expect(a.getBottom()).to.contain('<script type="text/javascript" src="123"></script><script type="text/javascript" src="/dist/js/page/entry.js"></script>');
+    });
+
+    it('prepend script tag without src', () => {
+        let a = new HTMLWrap();
+        a.prependTagBefore('entry', 'newTag', {content:'123'}, a.TAG_TYPE.SCRIPT);
+        expect(a.getBottom()).to.contain('<script type="text/javascript">123</script><script type="text/javascript" src="/dist/js/page/entry.js"></script>');
+    });
+
+    it('cdn insurance', () => {
+        let a = new HTMLWrap();
+        expect(a.getBottom()).to.contain('if(typeof React === "undefined"){document.write(unescape(\'%3Cscript src="/dist/lib/react-with-addons-0.13.3.js"%3E%3C/script%3E\'));}\nif(typeof Immutable === "undefined"){document.write(unescape(\'%3Cscript src="/dist/lib/immutable-3.7.4.min.js"%3E%3C/script%3E\'));}\nif(typeof $ === "undefined"){document.write(unescape(\'%3Cscript src="/dist/lib/jquery-2.1.4.min.js"%3E%3C/script%3E\'));}');
+    });
+
+    it('add cdn insurance', () => {
+        let a = new HTMLWrap();
+        a.addCDNInsurance('test', 'abcdefg');
+        expect(a.getBottom()).to.contain('if(typeof React === "undefined"){document.write(unescape(\'%3Cscript src="/dist/lib/react-with-addons-0.13.3.js"%3E%3C/script%3E\'));}\nif(typeof Immutable === "undefined"){document.write(unescape(\'%3Cscript src="/dist/lib/immutable-3.7.4.min.js"%3E%3C/script%3E\'));}\nif(typeof $ === "undefined"){document.write(unescape(\'%3Cscript src="/dist/lib/jquery-2.1.4.min.js"%3E%3C/script%3E\'));}\nif(typeof test === "undefined"){document.write(unescape(\'%3Cscript src="abcdefg"%3E%3C/script%3E\'));}');
+    });
+
+    it('expose TAG_TYPE', () => {
+        let a = new HTMLWrap();
+
+        expect(a.TAG_TYPE.SCRIPT).to.be('script');
+        expect(a.TAG_TYPE.STYLE).to.be('style');
+        expect(a.TAG_TYPE.META).to.be('meta');
+    });
+}

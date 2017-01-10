@@ -1,0 +1,52 @@
+{
+    "PORT": 80,
+    "APP": "",
+    "DIST_PATH": "dist",
+    "JS_LIB_PATH": "/dist/lib",
+    "JS_STATIC_PATH": "/dist/js",
+    "IMAGE_STATIC_PATH": "/dist/images",
+    "STYLE_STATIC_PATH": "/dist/style",
+    "RETINA_DEFAULT_RATIO": "@2x",
+    "STUB_SERVER": {
+        "AJAX_HOSTNAME": "127.0.0.1",
+        "AJAX_PORT": 80,
+        "HTTP_HOSTNAME": "localhost",
+        "HTTP_PORT": 8080,
+        "FILE_DIR": "stub"
+    },
+    "API_SERVER": {
+        "AJAX_HOSTNAME": "localhost",
+        "AJAX_PORT": 8080,
+        "HTTP_HOSTNAME": "localhost",
+        "HTTP_PORT": 8080
+    },
+    "IMAGE_UPLOAD": {
+        "ENABLE": false,
+        "PATH": "/image-storage",
+        "ADD_PATH": "/upload",
+        "DELETE_PATH": "/delete",
+        "MAX_SIZE": 2097152
+    },
+    "SERVER": {
+        "HOST": "otgameh5.onetalent.cn",
+        "PORT": 80
+    },
+    "@ALIYUN": {
+        "ACCESS_KEY_ID": "troDIDnP6lguSWDV",
+        "ACCESS_KEY_SECRET": "YoCsBasrrdmmpZzoAroBazsEkWqrg6",
+        "OSS_ENDPOINT": "http://oss-cn-shanghai.aliyuncs.com",
+        "BUCKET": "onetalent2016",
+        "DIRECTORY": "template",
+        "APP_IMG_DIRECTORY": "web"
+    },
+    "@WECHAT": {
+        "SERVER": "http://template.com:9999",
+        "AUTH": "https://open.weixin.qq.com/connect/oauth2/authorize",
+        "GET_ACCESS_TOKEN": "https://api.weixin.qq.com/sns/oauth2/access_token",
+        "GET_GLOBAL_ACCESS_TOKEN": "https://api.weixin.qq.com/cgi-bin/token",
+        "GET_JS_API_TICKET": "https://api.weixin.qq.com/cgi-bin/ticket/getticket",
+        "APP_ID": "",
+        "APP_SECRET": ""
+    },
+    "CROSSDOMAIN": "*"
+}

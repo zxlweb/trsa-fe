@@ -1,0 +1,21 @@
+#page-list {
+    .top-section {
+        @height: 54px;
+        .add-button {
+            @btn-height: 32px;
+            margin-top: (@height - @btn-height) / 2;
+            width: 140px;
+            #U > .pull-right();
+        }
+        .filter {
+            @input-height: 32px;
+            display: inline-block;
+            vertical-align: top;
+            // margin-top: (@height - @input-height) / 2;
+            margin-right: 4 * @unit;
+            width: 30%;
+            #U > .pull-right();
+        }
+    }
+}
+

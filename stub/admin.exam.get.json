@@ -1,0 +1,13 @@
+{
+    "result_code": 0,
+    "content": {
+        "report": {
+            "id": 101,
+            "title": "开心得三比",
+            "date": "2017-01-07 09:29:25",
+            "total_score": 200,
+            "total_people": 999,
+            "ready": true
+        }
+    }
+}

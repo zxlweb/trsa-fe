@@ -1,7 +1,7 @@
 {
   apps: [
     {
-      name: "template",
+      name: "XES_TRS_Dashboard",
       script: "dist/framework/server/server.js",
       env: {
         NODE_ENV: "production"
@@ -11,10 +11,10 @@
   deploy : {
     production : {
       user : "root",
-      host : "xiaonian.me",
+      host : "trsapi.xesfun.com",
       ref  : "origin/master",
-      repo : "https://github.com/MaxLee1994/XNL-React-Boilerplate.git",
-      path : "/usr/local/nginx/html/XNL-React-Boilerplate",
+      repo : "https://git.coding.net/MaxLee2015/XES_TRS_Dashboard.git",
+      path : "/usr/local/nginx/html/XES_TRS_Dashboard",
       "post-deploy" : "npm i && typings i && gulp && pm2 startOrRestart ecosystem.json5"
     }
   }

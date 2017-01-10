@@ -13,7 +13,7 @@
       user : "root",
       host : "trsapi.xesfun.com",
       ref  : "origin/master",
-      repo : "https://git.coding.net/MaxLee2015/XES_TRS_Dashboard.git",
+      repo : "https://maxlee2015:wxzswbhddf@git.coding.net/MaxLee2015/XES_TRS_Dashboard.git",
       path : "/usr/local/nginx/html/XES_TRS_Dashboard",
       "post-deploy" : "npm i && typings i && gulp && pm2 startOrRestart ecosystem.json5"
     }

@@ -26,7 +26,7 @@ import retina, {fNormal} from '../utils/retina';
 retina(config.get('RETINA_DEFAULT_RATIO'));
 global.fNormal = fNormal;
 
-if(env.prod()) {
+if(env.prod() && config.getIn(['@WECHAT', 'ENABLE'])) {
     wechatManager.init();
 }
 

@@ -19,7 +19,8 @@ module.exports = {
         'react': 'React',
         'immutable': 'Immutable',
         'react-dom': 'ReactDOM',
-        'cookies': 'Cookies'
+        'cookies': 'Cookies',
+        'antd': 'antd'
     },
     module: {
         loaders: [

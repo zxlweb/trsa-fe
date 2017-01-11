@@ -14,12 +14,13 @@ module.exports = {
         chunkFilename: '[name].js',
         sourceMapFilename: '[file].map'
     },
-    devtool: "source-map",
+    devtool: "false",
     externals: {
         'react': 'React',
         'immutable': 'Immutable',
         'react-dom': 'ReactDOM',
-        'cookies': 'Cookies'
+        'cookies': 'Cookies',
+        'antd': 'antd'
     },
     module: {
         loaders: [
@@ -28,9 +29,14 @@ module.exports = {
                 loader: 'to-string!css!postcss-loader!less!xnl-less-base-import-loader'
             },
             {
-                test: /\.tsx?$/,
+                test: /\.tsx$/,
                 exclude: /node_modules/,
                 loader: 'ts-loader!server-less-loader'
+            },
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                loader: 'ts-loader'
             }
         ]
     },
@@ -48,7 +54,7 @@ module.exports = {
             compress: {
                 warnings: false
             },
-            sourceMap: true
+            sourceMap: false
         }),
         new webpack.optimize.DedupePlugin(),
         new webpack.DefinePlugin({

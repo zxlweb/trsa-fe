@@ -35,6 +35,7 @@ class Root extends BaseComponent<any, any> {
         wrap.prependTagBefore('headTagClose', 'globalStyle', {href: config.get('STYLE_STATIC_PATH') + '/global.css'}, wrap.TAG_TYPE.STYLE);
         wrap.prependTagBefore('headTagClose', 'resetStyle', {href: config.get('STYLE_STATIC_PATH') + '/reset.css'}, wrap.TAG_TYPE.STYLE);
         wrap.prependTagBefore('headTagClose', 'antdStyle', {href: config.get('JS_LIB_PATH') + '/antd.min.css'}, wrap.TAG_TYPE.STYLE);
+        wrap.prependTagBefore('commons', 'antd', {src: config.get('JS_LIB_PATH') + '/antd.min.js'}, wrap.TAG_TYPE.SCRIPT);
     }
     constructor(props: any) {
         super(props);

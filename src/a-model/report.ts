@@ -70,7 +70,7 @@ const PROPERTIES: {
 export default class ReportModel extends BaseModel implements PropertiesInterface {
     p = PROPERTIES
     constructor() {
-        super(PROPERTIES);
+        super(PROPERTIES, 'exam');
     }
 }
 

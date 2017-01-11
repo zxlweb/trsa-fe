@@ -32,8 +32,10 @@ export default class BaseModel {
     private properties: {
         [key: string]: FieldDefinition
     }
-    constructor(p: {[key: string]: FieldDefinition}) {
+    private requestPrefix: string
+    constructor(p: {[key: string]: FieldDefinition}, requestPrefix: string) {
         this.properties = p;
+        this.requestPrefix = requestPrefix;
         this.completeProperties();
     }
     getListProperties() {
@@ -65,6 +67,9 @@ export default class BaseModel {
     }
     getViewProperties() {
 
+    }
+    getRequestPrefix() {
+        return this.requestPrefix;
     }
     private completeProperties() {
         for(let i in this.properties) {

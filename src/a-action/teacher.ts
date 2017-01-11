@@ -18,9 +18,11 @@ import {
     createUpdate,
     createUpdateStub
 } from './action-factory';
+import TeacherModel from '../a-model/teacher';
+const model = new TeacherModel();
 
 export const getAll = createGet(ACTION_TYPE.LIST_TEACHER, REQUEST.LIST_TEACHER);
 export const del = createDeleteStub(ACTION_TYPE.DELETE_TEACHER, REQUEST.DELETE_TEACHER);
 export const save = createSave(ACTION_TYPE.SAVE_TEACHER, REQUEST.SAVE_TEACHER);
 export const get = createGet(ACTION_TYPE.GET_SINGLE_TEACHER, REQUEST.GET_TEACHER);
-export const update = createUpdate(ACTION_TYPE.UPDATE_TEACHER, REQUEST.UPDATE_TEACHER);
+export const update = createUpdate(ACTION_TYPE.UPDATE_TEACHER, model.getRequestPrefix(), REQUEST.UPDATE_TEACHER, model.p.name.key);

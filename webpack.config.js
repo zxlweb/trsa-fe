@@ -56,7 +56,7 @@ module.exports = {
             },
             sourceMap: false
         }),
-        new webpack.optimize.DedupePlugin(),
+        // new webpack.optimize.DedupePlugin(),
         new webpack.DefinePlugin({
             __WEBPACK_DEV__: false,
             'process.env.NODE_ENV': '"production"'

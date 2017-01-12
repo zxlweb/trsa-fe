@@ -11,7 +11,7 @@
   deploy : {
     production : {
       user : "root",
-      host : "trsapi.xesfun.com",
+      host : "trsadmin.xesfun.com",
       ref  : "origin/master",
       repo : "https://maxlee2015:wxzswbhddf@git.coding.net/MaxLee2015/XES_TRS_Dashboard.git",
       path : "/usr/local/nginx/html/XES_TRS_Dashboard",

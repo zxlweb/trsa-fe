@@ -13,8 +13,8 @@ const PROPERTIES: {
     date: FieldDefinition,
     totalScore: FieldDefinition,
     totalPeople: FieldDefinition,
-    pv: FieldDefinition,
     viewed: FieldDefinition,
+    pv: FieldDefinition,
     ready: FieldDefinition,
 } = {
     id: {
@@ -52,16 +52,16 @@ const PROPERTIES: {
         showOnAdd: false,
         showOnEdit: false
     },
-    pv: {
-        key: 'pv',
-        title: '报告访问量',
+    viewed: {
+        key: 'viewed_count',
+        title: '已查询报告人数',
         type: FIELD_TYPE.INT,
         showOnAdd: false,
         showOnEdit: false
     },
-    viewed: {
-        key: 'viewed_count',
-        title: '已查询报告人数',
+    pv: {
+        key: 'pv',
+        title: '报告访问量',
         type: FIELD_TYPE.INT,
         showOnAdd: false,
         showOnEdit: false

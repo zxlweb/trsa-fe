@@ -33,7 +33,7 @@ class SiteHeader extends BaseComponent<any, any> {
                         <Col span={6} className="title">
                             <h1>TRS后台管理系统</h1>
                         </Col>
-                        <Col span={18} className="user-section">
+                        <Col span={17} className="user-section">
                             <a onClick={this.handleLogOut.bind(this)}>退出登录</a>
                         </Col>
                     </Row>

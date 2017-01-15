@@ -26,7 +26,9 @@ export const ROUTE_PATH = {
     REPORT_UPLOAD: 'upload',
     TEACHER_LIST: 'list',
     TEACHER_ADD: 'new',
-    TEACHER_EDIT: 'edit'
+    TEACHER_EDIT: 'edit',
+    AD: 'ad',
+    AD_EDIT: 'edit',
 };
 
 const Routes = [
@@ -84,6 +86,18 @@ const Routes = [
                 });
             }}></Route>
         </Route>
+        <Route path={`${ROUTE_PATH.AD}`} getComponent={(nextState, callback) => {
+            require.ensure([], function (require) {
+                callback(null, require('./page/dashboard/ad'));
+            });
+        }}>
+            <IndexRedirect to={`${ROUTE_PATH.AD_EDIT}`}></IndexRedirect>
+            <Route path={`${ROUTE_PATH.TEACHER_EDIT}`} getComponent={(nextState, callback) => {
+                require.ensure([], function (require) {
+                    callback(null, require('./page/dashboard/ad/edit'));
+                });
+            }}></Route>
+        </Route>        
     </Route>
 ];
 

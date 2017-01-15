@@ -5,6 +5,7 @@
 
 import * as React from 'react';
 import {Upload, Icon, message} from 'antd';
+import clonedeep = require('lodash.clonedeep');
 
 interface FileInterface {
     uid?: string,
@@ -18,10 +19,27 @@ export default class ImageUpload extends React.Component<{
     onChange?: (fileList: FileInterface[]) => void,
     fileList?: FileInterface[],
     directory?: string,
-    limit?: number
-}, any> {
+    limit?: number,
+    listType?: string
+}, {
+    fileList?: FileInterface[]
+}> {
     constructor(props: any) {
         super(props);
+
+        this.state = {
+            fileList: this.fileListPipe(this.props.fileList)
+        };
+    }
+    fileListPipe(fileList: any[] = []) {
+        return fileList.map((item, index) => {
+            item.uid = generateUid();
+            item.status = item.status || 'done';
+            item.thumbUrl = item.thumbUrl || item.url;
+            item.name = `配图-${index+1}`;
+            
+            return item;
+        });
     }
     handleChange(info: any) {
         let fileList = info.fileList;
@@ -29,7 +47,7 @@ export default class ImageUpload extends React.Component<{
         if(this.props.limit) {
             fileList = fileList.slice(-this.props.limit);
         }
-
+        
         fileList = fileList.map((file: any, index: number) => {
             if (file.response) {
                 file.url = file.response.file_path[0];
@@ -53,6 +71,9 @@ export default class ImageUpload extends React.Component<{
         // });
         // Promise.all(deleteTasks);
         
+        this.setState({
+            fileList
+        });
         this.props.onChange(fileList);
     }
     render() {
@@ -63,7 +84,7 @@ export default class ImageUpload extends React.Component<{
                 <Upload.Dragger 
                     {...this.props} 
                     action={`${__IMAGE_UPLOAD_PATH__}${__IMAGE_UPLOAD_ADD_PATH__}${this.props.directory ? `?directory=${this.props.directory}` : ''}`} 
-                    fileList={fileListPipe(this.props.fileList)} 
+                    fileList={this.state.fileList} 
                     onChange={this.handleChange.bind(this)}
                     accept=".jpg,.jpeg,.png"
                 >
@@ -74,24 +95,10 @@ export default class ImageUpload extends React.Component<{
     }
 }
 
-function fileListPipe(fileList: any[] = []) {
-    return fileList.map((item, index) => {
-        item.uid = item.uid || generateUid(fileList);
-        item.status = item.status || 'done';
-        item.thumbUrl = item.thumbUrl || item.url;
-        item.name = `image-${index+1}`;
-        return item;
-    });
-}
-function generateUid(fileList: any[] = []): any {
-    let result = Math.floor(Math.random() * 10000 - 1);
-    for(let i in fileList) {
-        if(fileList[i].uid == result) {
-            return generateUid(fileList);
-        }
-    }
+function generateUid(): string {
+    let result = Math.floor(Math.random() * 10000 - 1) + '';
 
-    return result + '';
+    return result;
 }
 function findDeleteFile(newFileList: any[] = [], oldFileList: any[] = []) {
     let result: any = [];

@@ -13,7 +13,8 @@ export enum EDIT_TYPE {
     DATE_TIME,
     SELECT_MULTIPLE,
     CHECKBOX,
-    IMAGE
+    IMAGE,
+    URL
 }
 
 export enum FIELD_TYPE {

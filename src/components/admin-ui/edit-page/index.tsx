@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import findIndex = require('lodash.findindex');
 import clone = require('lodash.clonedeep');
 import ImageUpload from '../image-upload';
+import {URLValidator} from '../../../utils/validator';
 
 class CustomizedForm extends React.Component<{
     fileds: FieldDefinition[],
@@ -28,7 +29,7 @@ class CustomizedForm extends React.Component<{
     transformOut(value: any, type: EDIT_TYPE) {
         switch(type) {
             case EDIT_TYPE.DATE: return value.format('YYYY-MM-DD HH:mm:ss');
-            case EDIT_TYPE.IMAGE: return value[0].thumbUrl;
+            case EDIT_TYPE.IMAGE: return value[0].url;
         }
         return value;
     }
@@ -56,7 +57,7 @@ class CustomizedForm extends React.Component<{
     }
     render() {
         const {getFieldDecorator} = this.props.form;
-
+        
         let formItems = this.props.fileds.map((item, index) => {
             let inputComponent: React.ReactNode;
             let typeValidators: any[] = [];
@@ -68,9 +69,14 @@ class CustomizedForm extends React.Component<{
                     typeValidators.push((value: any) => moment.isMoment(value));
                     break;
                 case EDIT_TYPE.IMAGE:
-                    inputComponent = <ImageUpload directory={item.imgUploadDirectory} limit={1}></ImageUpload>;
+                    inputComponent = <ImageUpload listType="picture" directory={item.imgUploadDirectory} limit={1}></ImageUpload>;
                     typeValidators.push((fileList: any[]) => fileList && fileList.length > 0);
                     break;
+                case EDIT_TYPE.URL: 
+                    inputComponent = <Input type="text"></Input>;
+                    typeValidators.push(URLValidator);
+                    break;
+                default: inputComponent = <Input></Input>;
             }
 
             return (
@@ -143,7 +149,8 @@ export default class EditPage extends BaseComponent<{
     fileds: FieldDefinition[],
     onSubmit: (values: any) => void,
     loading: boolean,
-    data: any
+    data: any,
+    hideBackLink?: boolean
 }, any> {
     static interceptor: Interceptor = (wrap, config, props, res, req) => {
 
@@ -162,9 +169,12 @@ export default class EditPage extends BaseComponent<{
                      <Row className="top-section">
                         <Col span={10} offset={1}>
                             <BreadCrumbAUI content={this.props.breadcrumbContent}></BreadCrumbAUI>
-                            <span className="back-link-section">
-                                <a onClick={e => browserHistory.goBack()}>返回上一页</a>
-                            </span>
+                            {
+                                !this.props.hideBackLink ?
+                                <span className="back-link-section">
+                                    <a onClick={e => browserHistory.goBack()}>返回上一页</a>
+                                </span> : ''
+                            }
                         </Col>
                      </Row>
                      <Row>

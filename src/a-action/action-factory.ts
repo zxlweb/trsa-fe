@@ -15,7 +15,7 @@ export const createDeleteStub = (action: string, requestURL: string) => createAc
 export const createGet = (action: string, requestURL: string) => createAction(action, null, (id: number) => ({id}), (id: number) => _http.get(`${requestURL}?id=${id}`));
 export const createGetStub = (action: string, requestURL: string) => createAction(action, null, (id: number) => ({id}), (id: number) => _http.getStub(`${requestURL}?id=${id}`));
 export const createUpdate = (action:string, requestPrefix: string, requestURL: string, mainKey?: string) => 
-createAction(action, null, (id: number, params: any) => ({...params, id}), (id: number, params: any) => {
+createAction(action, (id: number, params: any) => ({...params, id}), (id: number, params: any) => ({...params, id}), (id: number, params: any) => {
     let content: any = {};
     for(let i in params) {
         content[`${requestPrefix}.${i}`] = params[i];

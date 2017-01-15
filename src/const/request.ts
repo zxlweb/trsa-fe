@@ -16,6 +16,8 @@ const REQUEST = {
     SAVE_TEACHER: `${PREFIX}/teacher/add`,
     GET_TEACHER: `${PREFIX}/teacher/get`,
     UPDATE_TEACHER: `${PREFIX}/teacher/update`,
+    GET_AD_CONFIG: `${PREFIX}/config/get`,
+    UPDATE_AD_CONFIG: `${PREFIX}/config/update`
 };
 
 export default REQUEST;

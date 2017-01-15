@@ -3,9 +3,10 @@
  * @author Max
  **/
 
-import isMobilePhone from 'validator/lib/isMobilePhone';
-import isInt from 'validator/lib/isInt';
-import isFloat from 'validator/lib/isFloat';
+import isMobilePhone = require('validator/lib/isMobilePhone');
+import isInt = require('validator/lib/isInt');
+import isFloat = require('validator/lib/isFloat');
+import isURL = require('validator/lib/isURL');
 
 export const notEmptyValidator = (value: any) => value !== '' &&
                                           value !== undefined &&
@@ -18,6 +19,7 @@ export const integerValidator = (value: any) => typeof value === 'number' && isI
 export const floatValidator = (value: any) => typeof value === 'number' && isFloat(value + '');
 export const booleanValidator = (value: any) => typeof value === 'boolean';
 export const arrayValidator = (value: any) => Array.prototype.isPrototypeOf(value);
+export {isURL as URLValidator};
 
 function isEmptyObj(obj: any) {
     for(let i in obj) {

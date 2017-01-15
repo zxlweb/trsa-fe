@@ -21,6 +21,10 @@ const NAV_ITEM = [
     {
         href: `/${ROUTE_PATH.DASHBOARD}/${ROUTE_PATH.TEACHER}`,
         title: '教师管理'
+    },
+    {
+        href: `/${ROUTE_PATH.DASHBOARD}/${ROUTE_PATH.AD}`,
+        title: '广告管理'
     }
 ];
 

@@ -32,5 +32,9 @@ global.__APP__ = config.get('APP');
 global.__IMAGE_UPLOAD_PATH__ = config.getIn(['IMAGE_UPLOAD', 'PATH']);
 global.__IMAGE_UPLOAD_ADD_PATH__ = config.getIn(['IMAGE_UPLOAD', 'ADD_PATH']);
 global.__IMAGE_UPLOAD_DELETE_PATH__ = config.getIn(['IMAGE_UPLOAD', 'DELETE_PATH']);
+global.__API_SERVER_AJAX_HOSTNAME__ = config.getIn(['API_SERVER', 'AJAX_HOSTNAME']);
+global.__API_SERVER_AJAX_PORT__ = config.getIn(['API_SERVER', 'AJAX_PORT']);
+global.__API_SERVER_HTTP_HOSTNAME__ = config.getIn(['API_SERVER', 'HTTP_HOSTNAME']);
+global.__API_SERVER_HTTP_PORT__ = config.getIn(['API_SERVER', 'HTTP_PORT']);
 
 export default config;

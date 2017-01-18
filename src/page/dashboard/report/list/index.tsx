@@ -15,6 +15,7 @@ import ListPage from '../../../../components/admin-ui/list-page';
 import * as querystring from 'query-string';
 import {PropTypes as RouterPropTypes} from 'react-router';
 import * as reportActions from '../../../../a-action/report';
+import REQUEST from '../../../../const/request';
 
 const BREADCRUMB_CONTENT = [
     {
@@ -88,6 +89,13 @@ class ReportList extends BaseComponent<{
                                 actionTitle: '上传数据',
                                 redirectURL: `/${ROUTE_PATH.DASHBOARD}/${ROUTE_PATH.REPORT}/${ROUTE_PATH.REPORT_UPLOAD}`,
                                 idKey: model.p.id.key
+                            },
+                            {
+                                actionTitle: '查询情况统计表',
+                                redirectURL: `http://${__API_SERVER_AJAX_HOSTNAME__}:${__API_SERVER_AJAX_PORT__}${REQUEST.GET_EXAM_VIEWED_DATA}`,
+                                noRedirect: true,
+                                idKey: model.p.id.key,
+                                paramGenerator: (id: number) => `?eid=${id}`
                             }
                         ]}
                     />

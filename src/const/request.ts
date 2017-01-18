@@ -17,7 +17,8 @@ const REQUEST = {
     GET_TEACHER: `${PREFIX}/teacher/get`,
     UPDATE_TEACHER: `${PREFIX}/teacher/update`,
     GET_AD_CONFIG: `${PREFIX}/config/get`,
-    UPDATE_AD_CONFIG: `${PREFIX}/config/update`
+    UPDATE_AD_CONFIG: `${PREFIX}/config/update`,
+    GET_EXAM_VIEWED_DATA: `${PREFIX}/exam/getViewedData`
 };
 
 export default REQUEST;

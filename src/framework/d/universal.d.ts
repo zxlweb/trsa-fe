@@ -42,6 +42,10 @@ declare module NodeJS {
         __IMAGE_UPLOAD_PATH__: string
         __IMAGE_UPLOAD_ADD_PATH__: string
         __IMAGE_UPLOAD_DELETE_PATH__: string
+        __API_SERVER_AJAX_HOSTNAME__: string
+        __API_SERVER_AJAX_PORT__: string
+        __API_SERVER_HTTP_HOSTNAME__: string
+        __API_SERVER_HTTP_PORT__: string
     }
 }
 interface Window {

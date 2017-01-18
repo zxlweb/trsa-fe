@@ -55,7 +55,9 @@ export default class ListPage extends BaseComponent<{
         {
             actionTitle: string
             redirectURL: string
-            idKey: string
+            noRedirect?: boolean
+            idKey?: string
+            paramGenerator?: (id: number) => string
         }
     ]
 }, {
@@ -117,9 +119,15 @@ export default class ListPage extends BaseComponent<{
                                 );
                                 break;
                             case 'extra':
-                                actionBlock.push(
-                                    <a key={index} onClick={e => browserHistory.push(`${element.options.redirectURL}/${record[element.options.idKey]}`)}>{element.options.actionTitle}</a>
-                                );
+                                if(!element.options.noRedirect) {
+                                    actionBlock.push(
+                                        <a key={index} onClick={e => browserHistory.push(`${element.options.redirectURL}/${record[element.options.idKey]}`)}>{element.options.actionTitle}</a>
+                                    );
+                                } else {
+                                    actionBlock.push(
+                                        <a key={index} href={`${element.options.redirectURL}${element.options.paramGenerator(record[element.options.idKey])}`}>{element.options.actionTitle}</a>
+                                    );
+                                }
                                 break;
                         }
                     });

@@ -4,19 +4,21 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
-import BaseComponent, {Interceptor} from '../../../base';
-import {Row, Col, Button, Input, Table, Popconfirm, Form, DatePicker} from 'antd';
-import {WrappedFormUtils} from 'antd/lib/form/Form';
+import { connect } from 'react-redux';
+import BaseComponent, { Interceptor } from '../../../base';
+import { Row, Col, Button, Input, Table, Popconfirm, Form, DatePicker, Checkbox, Select } from 'antd';
+import { WrappedFormUtils } from 'antd/lib/form/Form';
 const FormItem = Form.Item;
-import {default as BreadCrumbAUI, BreadcrumbContent} from '../breadcrumb';
-import {browserHistory} from 'react-router';
-import {FieldDefinition} from '../../../a-model/base';
-import {EDIT_TYPE, FIELD_TYPE} from '../../../a-model/enum';
+const Option = Select.Option;
+import { default as BreadCrumbAUI, BreadcrumbContent } from '../breadcrumb';
+import { browserHistory } from 'react-router';
+import { FieldDefinition } from '../../../a-model/base';
+import { EDIT_TYPE, FIELD_TYPE } from '../../../a-model/enum';
 import * as moment from 'moment';
 import findIndex = require('lodash.findindex');
 import clone = require('lodash.clonedeep');
 import ImageUpload from '../image-upload';
+import { GRADE } from '../../../const/grade'
 
 class CustomizedForm extends React.Component<{
     fileds: FieldDefinition[],
@@ -25,36 +27,36 @@ class CustomizedForm extends React.Component<{
     loading: boolean
 }, any> {
     transformOut(value: any, type: EDIT_TYPE) {
-        switch(type) {
+        switch (type) {
             case EDIT_TYPE.DATE: return value.format('YYYY-MM-DD HH:mm:ss');
             case EDIT_TYPE.IMAGE: return value[0].thumbUrl;
         }
         return value;
     }
     handleSubmit() {
-        const {form, fileds, onSubmit} = this.props;
+        const { form, fileds, onSubmit } = this.props;
         form.validateFieldsAndScroll(fileds.map(item => item.key), {}, (err: any, values: any) => {
-            if(!err) {
+            if (!err) {
                 let result = clone(values);
-                for(let i in values) {
+                for (let i in values) {
                     let index = findIndex(fileds, (item) => item.key === i);
                     result[i] = this.transformOut(result[i], fileds[index].inputType);
                 }
-                
+
                 onSubmit(result);
             }
         });
     }
     render() {
-        const {getFieldDecorator} = this.props.form;
+        const { getFieldDecorator } = this.props.form;
 
         let formItems = this.props.fileds.map((item, index) => {
             let inputComponent: React.ReactNode;
             let typeValidators: any[] = [];
 
-            switch(item.inputType) {
-                case EDIT_TYPE.INPUT_STRING: inputComponent = <Input />;break;
-                case EDIT_TYPE.DATE: 
+            switch (item.inputType) {
+                case EDIT_TYPE.INPUT_STRING: inputComponent = <Input />; break;
+                case EDIT_TYPE.DATE:
                     inputComponent = <DatePicker></DatePicker>;
                     typeValidators.push((value: any) => moment.isMoment(value));
                     break;
@@ -62,16 +64,30 @@ class CustomizedForm extends React.Component<{
                     inputComponent = <ImageUpload directory={item.imgUploadDirectory} limit={1}></ImageUpload>;
                     typeValidators.push((fileList: any[]) => fileList && fileList.length > 0);
                     break;
+                case EDIT_TYPE.CHECKBOX:
+                    inputComponent = <Checkbox></Checkbox>;
+                    break;
+                case EDIT_TYPE.SELECT_SINGLE:
+                    inputComponent = <Select>
+                        {
+                            GRADE.map((item, index) => {
+                                return (
+                                    <Option key={index} value={(index + 1)}>{item}</Option>
+                                );
+                            })
+                        }
+                    </Select>;
+                    break;
             }
 
             return (
-                <FormItem label={item.title} key={index} labelCol={{span: 4}} wrapperCol={{span: 10}}>
+                <FormItem label={item.title} key={index} labelCol={{ span: 4 }} wrapperCol={{ span: 10 }}>
                     {
                         getFieldDecorator(item.key, {
                             rules: [
                                 {
                                     type: (() => {
-                                        switch(item.type) {
+                                        switch (item.type) {
                                             case FIELD_TYPE.STRING: return 'string';
                                             case FIELD_TYPE.TIMESTAMP: return 'object';
                                             case FIELD_TYPE.INT: return 'integer';
@@ -85,15 +101,15 @@ class CustomizedForm extends React.Component<{
                                     message: item.required ? `${item.title}不能为空` : ''
                                 },
                                 {
-                                    validator(rule: any,value: any,callback: any) {
+                                    validator(rule: any, value: any, callback: any) {
                                         let errors: Error[] = [];
                                         item.validators && item.validators.forEach(v => {
-                                            if(!v.func(value)) {
+                                            if (!v.func(value)) {
                                                 errors.push(new Error(v.msg));
                                             }
                                         });
                                         typeValidators.forEach(v => {
-                                            if(!v(value)) {
+                                            if (!v(value)) {
                                                 errors.push(new Error(`请输入正确的${item.title}`))
                                             }
                                         })
@@ -102,7 +118,7 @@ class CustomizedForm extends React.Component<{
                                 }
                             ],
                             valuePropName: (() => {
-                                switch(item.inputType) {
+                                switch (item.inputType) {
                                     case EDIT_TYPE.IMAGE: return 'fileList';
                                 }
                                 return 'value';
@@ -115,7 +131,7 @@ class CustomizedForm extends React.Component<{
         return (
             <Form onSubmit={e => console.log(e)}>
                 {formItems}
-                <FormItem wrapperCol={{offset: 4, span: 10}}>
+                <FormItem wrapperCol={{ offset: 4, span: 10 }}>
                     <Button loading={this.props.loading} type="primary" htmlType="button" onClick={this.handleSubmit.bind(this)}>提交</Button>
                 </FormItem>
             </Form>
@@ -146,21 +162,21 @@ export default class AddPage extends BaseComponent<{
     render() {
         return (
             <div>
-                <style dangerouslySetInnerHTML={{__html: style}}></style>
+                <style dangerouslySetInnerHTML={{ __html: style }}></style>
                 <div id="page-add">
-                     <Row className="top-section">
+                    <Row className="top-section">
                         <Col span={10} offset={1}>
                             <BreadCrumbAUI content={this.props.breadcrumbContent}></BreadCrumbAUI>
                             <span className="back-link-section">
                                 <a onClick={e => browserHistory.goBack()}>返回上一页</a>
                             </span>
                         </Col>
-                     </Row>
-                     <Row>
+                    </Row>
+                    <Row>
                         <Col span={22} offset={1}>
                             <AddPageForm loading={this.props.loading} fileds={this.props.fileds} onSubmit={this.handleAdd.bind(this)}></AddPageForm>
                         </Col>
-                     </Row>
+                    </Row>
                 </div>
             </div>
         );

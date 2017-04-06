@@ -6,6 +6,7 @@
 import {EDIT_TYPE, FIELD_TYPE} from './enum';
 import {default as BaseModel, PropertiesInterface, FieldDefinition} from './base';
 import * as moment from 'moment';
+import {GRADE} from '../const/grade';
 
 const PROPERTIES: {
     id: FieldDefinition,
@@ -16,6 +17,10 @@ const PROPERTIES: {
     viewed: FieldDefinition,
     pv: FieldDefinition,
     ready: FieldDefinition,
+    noTeacher: FieldDefinition,
+    noQuestionDetail: FieldDefinition,
+    noKP: FieldDefinition,
+    grade: FieldDefinition
 } = {
     id: {
         key: 'id',
@@ -36,6 +41,14 @@ const PROPERTIES: {
         type: FIELD_TYPE.TIMESTAMP,
         inputType: EDIT_TYPE.DATE,
         render: (input: any) => moment(input, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD'),
+        required: true
+    },
+    grade: {
+        key: 'grade',
+        title: '年级',
+        type: FIELD_TYPE.INT,
+        inputType: EDIT_TYPE.SELECT_SINGLE,
+        render: (input: number) => GRADE[input - 1],
         required: true
     },
     totalScore: {
@@ -73,6 +86,27 @@ const PROPERTIES: {
         render: (input: any) => input ? '是' : '否',
         showOnAdd: false,
         showOnEdit: false
+    },
+    noTeacher: {
+        key: 'no_teacher',
+        title: '隐藏同门排名',
+        type: FIELD_TYPE.BOOLEAN,
+        inputType: EDIT_TYPE.CHECKBOX,
+        render: (input: any) => input ? '是' : '否',
+    },
+    noQuestionDetail: {
+        key: 'no_question_detail',
+        title: '隐藏小分',
+        type: FIELD_TYPE.BOOLEAN,
+        inputType: EDIT_TYPE.CHECKBOX,
+        render: (input: any) => input ? '是' : '否',
+    },
+    noKP: {
+        key: 'no_kp',
+        title: '隐藏知识点',
+        type: FIELD_TYPE.BOOLEAN,
+        inputType: EDIT_TYPE.CHECKBOX,
+        render: (input: any) => input ? '是' : '否',
     }
 };
 export default class ReportModel extends BaseModel implements PropertiesInterface {

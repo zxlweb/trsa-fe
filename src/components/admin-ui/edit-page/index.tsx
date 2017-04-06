@@ -6,9 +6,10 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import BaseComponent, {Interceptor} from '../../../base';
-import {Row, Col, Button, Input, Table, Popconfirm, Form, DatePicker} from 'antd';
+import {Row, Col, Button, Input, Table, Popconfirm, Form, DatePicker, Checkbox, Select} from 'antd';
 import {WrappedFormUtils} from 'antd/lib/form/Form';
 const FormItem = Form.Item;
+const Option = Select.Option;
 import {default as BreadCrumbAUI, BreadcrumbContent} from '../breadcrumb';
 import {browserHistory} from 'react-router';
 import {FieldDefinition} from '../../../a-model/base';
@@ -18,6 +19,7 @@ import findIndex = require('lodash.findindex');
 import clone = require('lodash.clonedeep');
 import ImageUpload from '../image-upload';
 import {URLValidator} from '../../../utils/validator';
+import {GRADE} from '../../../const/grade';
 
 class CustomizedForm extends React.Component<{
     fileds: FieldDefinition[],
@@ -76,6 +78,20 @@ class CustomizedForm extends React.Component<{
                     inputComponent = <Input type="text"></Input>;
                     typeValidators.push(URLValidator);
                     break;
+                case EDIT_TYPE.CHECKBOX:
+                    inputComponent = <Checkbox></Checkbox>;
+                    break;
+                case EDIT_TYPE.SELECT_SINGLE:
+                    inputComponent = <Select>
+                        {
+                            GRADE.map((item, index) => {
+                                return (
+                                    <Option key={index} value={(index + 1)}>{item}</Option>
+                                );
+                            })
+                        }
+                    </Select>;
+                    break;
                 default: inputComponent = <Input></Input>;
             }
 
@@ -119,6 +135,7 @@ class CustomizedForm extends React.Component<{
                             valuePropName: (() => {
                                 switch(item.inputType) {
                                     case EDIT_TYPE.IMAGE: return 'fileList';
+                                    case EDIT_TYPE.CHECKBOX: return 'defaultChecked';
                                 }
                                 return 'value';
                             })(),

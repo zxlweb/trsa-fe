@@ -3,7 +3,7 @@
  * @author Max
  **/
 
-const PREFIX = '/admin';
+const PREFIX = '/trs/admin';
 
 const REQUEST = {
     LIST_REPORT: `${PREFIX}/exam/list`,

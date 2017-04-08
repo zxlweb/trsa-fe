@@ -7,4 +7,4 @@ COPY conf conf
 COPY dist dist
 
 EXPOSE 9999
-CMD ["pm2-docker", "dist/index.js"]
+CMD ["pm2-docker", "dist/framework/server/server.js"]

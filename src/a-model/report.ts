@@ -83,9 +83,9 @@ const PROPERTIES: {
         key: 'ready',
         title: '是否就绪',
         type: FIELD_TYPE.BOOLEAN,
+        inputType: EDIT_TYPE.CHECKBOX,
         render: (input: any) => input ? '是' : '否',
-        showOnAdd: false,
-        showOnEdit: false
+        showOnAdd: false
     },
     noTeacher: {
         key: 'no_teacher',

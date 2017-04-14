@@ -6,6 +6,7 @@ var packageFile = require('package')('.');
 var exec = require('child_process').exec;
 var ts = require('gulp-typescript');
 var tsProject = ts.createProject('tsconfig.json');
+var tsProjectDev = ts.createProject('tsconfig.json', { isolatedModules: true });
 var less = require('gulp-less');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
@@ -38,53 +39,76 @@ var JS_LIB_DEST_DIR = 'lib';
 
 var IMAGE_TO_COMPRESS = '.jpg,.png,.svg,.gif';
 
-gulp.task('clean', function(done) {
-    del([path.join(BUILD_DIR, '**')]).then(function() {
+class WaitList {
+    constructor() {
+        this.tsReaday = false;
+        this.webpackReady = false;
+    }
+    setTSReady() {
+        this.tsReaday = true;
+        this.notify();
+    }
+    setWebpackReady() {
+        this.webpackReady = true;
+        this.notify();
+    }
+    notify() {
+        if (this.tsReaday && this.webpackReady) {
+            exec(`pm2 restart ${packageFile.name}`);
+            this.tsReaday = false;
+            this.webpackReady = false;
+        }
+    }
+}
+const wl = new WaitList();
+
+gulp.task('clean', function (done) {
+    del([path.join(BUILD_DIR, '**')]).then(function () {
         done();
     });
 });
 
-gulp.task('sentry:release', ['webpack'], function() {
-    return gulp.src([path.join(BUILD_DIR, 'js/page', '*')], {base: '.'})
-               .pipe(sentryRelease.release());
+gulp.task('sentry:release', ['webpack'], function () {
+    return gulp.src([path.join(BUILD_DIR, 'js/page', '*')], { base: '.' })
+        .pipe(sentryRelease.release());
 });
 
-gulp.task('image compression', ['clean'], function() {
+gulp.task('image compression', ['clean'], function () {
     return gulp.src([path.join(SRC_DIR, IMG_SRC_DIR, '**')])
-          .pipe(cache(imagemin({
-              progressive: true,
-              svgoPlugins: [{removeViewBox: false}],
-              use: [pngquant()]
-          }), {
-              fileCache: new cache.Cache({cacheDirName: packageFile.name + '-cache'})
-          }))
-          .pipe(gulp.dest(path.join(BUILD_DIR, IMG_DEST_DIR)));
+        .pipe(cache(imagemin({
+            progressive: true,
+            svgoPlugins: [{ removeViewBox: false }],
+            use: [pngquant()]
+        }), {
+                fileCache: new cache.Cache({ cacheDirName: packageFile.name + '-cache' })
+            }))
+        .pipe(gulp.dest(path.join(BUILD_DIR, IMG_DEST_DIR)));
 });
 
-gulp.task('update img to oss', ['image compression'], function() {
+gulp.task('update img to oss', ['image compression'], function () {
     var config = require('./conf/prod');
 
     return gulp.src(path.join(BUILD_DIR, IMG_SRC_DIR, '**'))
-           .pipe(gzip({append: false}))
-           .pipe(cache(oss({
-                    "key": config['@ALIYUN'].ACCESS_KEY_ID,
-                    "secret": config['@ALIYUN'].ACCESS_KEY_SECRET,
-                    "endpoint": 'http://' + config['@ALIYUN'].OSS_ENDPOINT
-                }, {
-                    headers: {
-                      Bucket: config['@ALIYUN'].BUCKET,
-                      ContentEncoding: 'gzip'
-                    },
-                    uploadPath: config['@ALIYUN'].APP_IMG_DIRECTORY + '/'
-                }), {
-                    fileCache: new cache.Cache({cacheDirName: packageFile.name + '-cache-oss-img'})
-          }));
+        .pipe(gzip({ append: false }))
+        .pipe(cache(oss({
+            "key": config['@ALIYUN'].ACCESS_KEY_ID,
+            "secret": config['@ALIYUN'].ACCESS_KEY_SECRET,
+            "endpoint": 'http://' + config['@ALIYUN'].OSS_ENDPOINT
+        }, {
+                headers: {
+                    Bucket: config['@ALIYUN'].BUCKET,
+                    ContentEncoding: 'gzip'
+                },
+                uploadPath: config['@ALIYUN'].APP_IMG_DIRECTORY + '/'
+            }), {
+                fileCache: new cache.Cache({ cacheDirName: packageFile.name + '-cache-oss-img' })
+            }));
 });
 
-gulp.task('webpack', ['clean'], function(done) {
-    return webpack(webpackConfigProd, function(err, stats) {
+gulp.task('webpack', ['clean'], function (done) {
+    return webpack(webpackConfigProd, function (err, stats) {
         var output = stats.toString();
-        if(output.indexOf('ERROR') !== -1) {
+        if (output.indexOf('ERROR') !== -1) {
             console.log(output);
             return done(new Error('webpack build failed'));
         }
@@ -92,52 +116,66 @@ gulp.task('webpack', ['clean'], function(done) {
     });
 });
 
-gulp.task('compile less', ['clean'], function() {
-    var processors = [autoprefixer, cssnano({zindex: false, reduceIdents: false})];
+gulp.task('compile less', ['clean'], function () {
+    var processors = [autoprefixer, cssnano({ zindex: false, reduceIdents: false })];
 
     return gulp.src([path.join(SRC_DIR, '**/*.less')])
-               .pipe(plumber())
-               .pipe(lessBaseImport(webpackConfigProd.lessImportLoader.base))
-               .pipe(less())
-               .pipe(postcss(processors))
-               .pipe(gulp.dest(path.join(BUILD_DIR)));
+        .pipe(plumber())
+        .pipe(lessBaseImport(webpackConfigProd.lessImportLoader.base))
+        .pipe(less())
+        .pipe(postcss(processors))
+        .pipe(gulp.dest(path.join(BUILD_DIR)));
 });
-gulp.task('compile less once', [], function() {
-    var processors = [autoprefixer, cssnano({zindex: false, reduceIdents: false})];
+gulp.task('compile less once', [], function () {
+    var processors = [autoprefixer, cssnano({ zindex: false, reduceIdents: false })];
 
     return gulp.src([path.join(SRC_DIR, '**/*.less')])
-               .pipe(plumber())
-               .pipe(lessBaseImport(webpackConfigProd.lessImportLoader.base))
-               .pipe(less())
-               .pipe(postcss(processors))
-               .pipe(gulp.dest(path.join(BUILD_DIR)));
+        .pipe(plumber())
+        .pipe(lessBaseImport(webpackConfigProd.lessImportLoader.base))
+        .pipe(less())
+        .pipe(postcss(processors))
+        .pipe(gulp.dest(path.join(BUILD_DIR)));
 });
 
-gulp.task('compile ts', ['clean'], function() {
+gulp.task('compile ts', ['clean'], function () {
     return tsProject
-    .src() 
-    .pipe(tsProject())
-    .js
-    .pipe(gulp.dest(path.join(BUILD_DIR)));
-});
-gulp.task('compile ts once', [], function() {
-    return tsProject
-    .src() 
-    .pipe(tsProject())
-    .js
-    .pipe(gulp.dest(path.join(BUILD_DIR)));
+        .src()
+        .pipe(tsProject())
+        .js
+        .pipe(gulp.dest(path.join(BUILD_DIR)));
 });
 
-gulp.task('compile tests', ['clean'], function() {
+gulp.task('compile ts once', [], function () {
+    return tsProjectDev
+        .src()
+        .pipe(tsProjectDev())
+        .js
+        .pipe(gulp.dest(path.join(BUILD_DIR)))
+        .on('end', function () {
+            wl.setTSReady();
+        });
+});
+gulp.task('aaa', [], function () {
+    return tsProjectDev
+        .src()
+        .pipe(tsProjectDev())
+        .js
+        .pipe(gulp.dest(path.join(BUILD_DIR)))
+        .on('end', function () {
+            wl.setTSReady();
+        });
+});
+
+gulp.task('compile tests', ['clean'], function () {
     return gulp.src(path.join(TEST_DIR, '**/*.babel'))
-               .pipe(babel())
-               .pipe(gulp.dest(path.join(BUILD_DIR, TEST_DIR)));
+        .pipe(babel())
+        .pipe(gulp.dest(path.join(BUILD_DIR, TEST_DIR)));
 });
 
-gulp.task('move lib', ['clean'], function() {
+gulp.task('move lib', ['clean'], function () {
     return gulp.src(path.join(SRC_DIR, JS_LIB_SRC_DIR, '*')).pipe(gulp.dest(path.join(BUILD_DIR, JS_LIB_DEST_DIR)));
 });
-gulp.task('move lib once', [], function() {
+gulp.task('move lib once', [], function () {
     return gulp.src(path.join(SRC_DIR, JS_LIB_SRC_DIR, '*')).pipe(gulp.dest(path.join(BUILD_DIR, JS_LIB_DEST_DIR)));
 });
 
@@ -147,15 +185,13 @@ gulp.task('watch webpack', [], function () {
 
         compiler.watch({
             aggregateTimeout: 300, // wait so long for more changes
-            poll: 2000 // use polling instead of native watchers
-            // pass a number to set the polling interval
         }, function (err, stats) {
-            if(err) {
+            if (err) {
                 console.error(err);
             } else {
                 let now = new moment();
                 console.info(`[${now.format('HH:mm:ss')}]------webpack compile finished-------`);
-                exec('pm2 restart all');
+                wl.setWebpackReady();
             }
         });
     } catch (e) {
@@ -163,47 +199,49 @@ gulp.task('watch webpack', [], function () {
     }
 });
 
-gulp.task('watch ts', ['compile ts once'], function() {
+gulp.task('watch ts', ['compile ts once'], function () {
     gulp.watch([path.join(SRC_DIR, '**/*.{ts,tsx}')], ['compile ts once']);
 });
 
-gulp.task('watch less', ['compile less once'], function() {
+gulp.task('watch less', ['compile less once'], function () {
     gulp.watch(path.join(SRC_DIR, '**/*.less'), ['compile less once']);
 });
 
 function watchThingsOnlyMove(src, dest) {
     gulp.src(src).pipe(gulp.dest(dest));
 
-    gulp.watch((src), function() {
+    gulp.watch((src), function () {
         gulp.src(src).pipe(gulp.dest(dest));
     });
 }
 
-gulp.task('move img', [], function() {
-      return gulp.src(path.join(SRC_DIR, IMG_SRC_DIR, '**')).pipe(gulp.dest(path.join(BUILD_DIR, IMG_DEST_DIR)));
+gulp.task('move img', [], function () {
+    return gulp.src(path.join(SRC_DIR, IMG_SRC_DIR, '**')).pipe(gulp.dest(path.join(BUILD_DIR, IMG_DEST_DIR)));
 });
 
-gulp.task('watch lib', ['move lib once'], function() {
-    gulp.watch(path.join(SRC_DIR, JS_LIB_SRC_DIR, '**'), ['move lib once']); 
+gulp.task('watch lib', ['move lib once'], function () {
+    gulp.watch(path.join(SRC_DIR, JS_LIB_SRC_DIR, '**'), ['move lib once']);
 });
-gulp.task('watch img', ['move img'], function() {
+gulp.task('watch img', ['move img'], function () {
     gulp.watch(path.join(SRC_DIR, IMG_SRC_DIR, '**'), ['move img']);
 });
 
 // gulp.task('default', ['clean', 'image compression', 'update img to oss', 'compile ts', 'webpack', 'compile less', 'move lib']);
 // gulp.task('default', ['clean', 'move img', 'compile ts', 'webpack', 'compile less', 'move lib']);
 gulp.task('default', ['clean', 'compile ts', 'webpack', 'compile less', 'move lib']);
-gulp.task('dev', ['watch webpack', 'watch ts', 'watch lib', 'watch img', 'watch less']);
-gulp.task('test', ['babel', 'compile less', 'compile tests'], function() {
-    return gulp.src(path.join(BUILD_DIR, TEST_DIR, 'spec.js'), {read: false})
-               .pipe(mocha());
+gulp.task('dev', ['watch webpack', 'watch ts', 'watch lib', 'watch img', 'watch less'], function () {
+    exec(`pm2 restart ${packageFile.name}`);
 });
-gulp.task('cov', [], function(done) {
-    exec('istanbul cover _mocha dist/test/spec.js -- -R spec', function(err, stdout, stderr) {
+gulp.task('test', ['babel', 'compile less', 'compile tests'], function () {
+    return gulp.src(path.join(BUILD_DIR, TEST_DIR, 'spec.js'), { read: false })
+        .pipe(mocha());
+});
+gulp.task('cov', [], function (done) {
+    exec('istanbul cover _mocha dist/test/spec.js -- -R spec', function (err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
 
-        if(err !== null) {
+        if (err !== null) {
             console.error('code coverage failed!');
             process.exit(1);
         } else {

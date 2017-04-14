@@ -4,14 +4,14 @@
  */
 
 import * as React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import createSelector from '../../utils/immu-reselect';
-import BaseComponent, {Interceptor} from '../../base';
+import BaseComponent, { Interceptor } from '../../base';
 import Header = require('../../components/header');
 import AsideNav = require('../../components/aside-nav');
-import {Row, Col} from 'antd';
-import {ROUTE_PATH} from '../../routes';
-import {browserHistory} from 'react-router';
+// import { Row, Col } from 'antd';
+import { ROUTE_PATH } from '../../routes';
+import { browserHistory } from 'react-router';
 
 const NAV_ITEM = [
     {
@@ -30,34 +30,49 @@ const NAV_ITEM = [
 
 const style = _importLess('./index', __dirname);
 class Dashboard extends BaseComponent<{
-    account: string
+    account: string,
+    client: boolean
 }, any> {
     static interceptor: Interceptor = (wrap, config, props, res, req) => {
 
     }
     constructor(props: any) {
         super(props);
-    }
-    componentDidMount() {
-        const {account} = this.props;
-        if(account === undefined) {
-            browserHistory.push('/');
+        this.state = {
+            client: false
         }
     }
+    componentDidMount() {
+        const { account } = this.props;
+        if (account === undefined) {
+            browserHistory.push('/');
+        }
+        this.setState({
+            client: true
+        });
+    }
     render() {
-        
+        let clientBlock: any;
+        if (this.state.client) {
+            const Antd = require('antd');
+            const Row = Antd.Row;
+            const Col = Antd.Col;
+            clientBlock =
+                <Row>
+                    <Col span={18} offset={5}>
+                        {this.props.children}
+                    </Col>
+                </Row>;
+        }
+
         return (
             <div>
-                <style dangerouslySetInnerHTML={{__html: style}}></style>
+                <style dangerouslySetInnerHTML={{ __html: style }}></style>
                 <div id="page-dashboard">
                     <Header></Header>
                     <AsideNav navItems={NAV_ITEM} {...this.props}></AsideNav>
                     <div className="content-section">
-                        <Row>
-                            <Col span={18} offset={5}>
-                                {this.props.children}
-                            </Col>
-                        </Row>
+                        {clientBlock}
                     </div>
                 </div>
             </div>

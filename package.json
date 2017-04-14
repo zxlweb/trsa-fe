@@ -73,6 +73,7 @@
     "@types/react-redux": "^4.4.35",
     "@types/react-router": "^2.0.41",
     "@types/redux-actions": "^1.2.2",
+    "@types/redux-promise": "^0.5.24",
     "aliyun-sdk": "^1.9.17",
     "antd": "2.6.0",
     "body-parser": "^1.15.2",

@@ -148,7 +148,7 @@ const selector = createSelector(
     (state: any, props: any) => state.report.getIn(['data', props.params.id]),
     (state: any, props: any) => state.report.get('tempData'),
     (reportData: any, tempData: any) => ({
-        data: tempData ? tempData.toJS() : reportData.toJS()
+        data: reportData.toJS()
     })
 );
 

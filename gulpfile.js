@@ -17,6 +17,7 @@ var path = require('path');
 var oss = require('gulp-oss');
 var gzip = require("gulp-gzip");
 var del = require('del');
+var moment = require('moment');
 // var sentryRelease = require('gulp-sentry-release')('./package.json', {
 //     DOMAIN: 'http://pxzsh5.onetalent.cn', // prefix domain in the `name` param when upload file. Leave blank to use path. Do not add trailing slash
 // 	API_URL: 'https://app.getsentry.com/api/0/projects/onetalent-tech/onetalent-pxzs/',
@@ -140,21 +141,25 @@ gulp.task('move lib once', [], function() {
     return gulp.src(path.join(SRC_DIR, JS_LIB_SRC_DIR, '*')).pipe(gulp.dest(path.join(BUILD_DIR, JS_LIB_DEST_DIR)));
 });
 
-gulp.task('watch webpack', [], function() {
+gulp.task('watch webpack', [], function () {
     try {
-        var action = function() {
-            exec('webpack --watch -d --config webpack.dev.config.js', function(err, stdout, stderr) {
-                console.log(stdout);
-                console.log(stderr);
-                if(err) {
-                    console.log(err);
-                    action();
-                }
-            });
-        };
-        action();
-    } catch(e) {
-        console.log(e);
+        let compiler = webpack(require('./webpack.dev.config'));
+
+        compiler.watch({
+            aggregateTimeout: 300, // wait so long for more changes
+            poll: 2000 // use polling instead of native watchers
+            // pass a number to set the polling interval
+        }, function (err, stats) {
+            if(err) {
+                console.error(err);
+            } else {
+                let now = new moment();
+                console.info(`[${now.format('HH:mm:ss')}]------webpack compile finished-------`);
+                exec('pm2 restart all');
+            }
+        });
+    } catch (e) {
+        console.error(e);
     }
 });
 

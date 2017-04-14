@@ -1,7 +1,7 @@
 {
     "name": "XES_TRS_Dashboard",
     "script": "dist/framework/server/server.js",
-    "watch": ["dist", "conf"],
+    "watch": ["conf"],
     "env": {
         "NODE_ENV": ""
     }

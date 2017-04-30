@@ -2,7 +2,6 @@ var path = require('path');
 var webpack = require('webpack');
 var autoprefixer = require('autoprefixer');
 var cssnano = require('cssnano');
-var zxl="";
 module.exports = {
     entry: {
         entry: './src/framework/bootstrap/entry.tsx'
